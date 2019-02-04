@@ -22,9 +22,16 @@ Open Jupyter and Run 'compute_ddc_models.ipynb'
 jupyter notebok
 ```
 
+### 3. Run API
+
+Calling curl with a dummy request
+```
+python ./ddc-api.py
+```
+
 ### 4. Test the API
 
 Calling curl with a dummy request
 ```
-curl http://localhost:8888/demo-rest-jersey-spring/podcasts/1
+curl -X GET http://127.0.0.1:5000/score
 ```
