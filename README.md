@@ -11,6 +11,14 @@ First, install the dependencies packages.
 pip install -r requirements.txt
 ```
 
+Build Models
+------------
+
+Open Jupyter and Run 'compute_ddc_models.ipynb'
+```
+jupyter notebok
+```
+
 Test the API
 ------------
 
