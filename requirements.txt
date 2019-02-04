@@ -6,3 +6,5 @@ scipy
 sklearn
 flask-api
 jupyter
+pytest
+flexmock
