@@ -33,5 +33,5 @@ python ./ddc-api.py
 
 Calling curl with a dummy request
 ```
-curl -X GET http://127.0.0.1:5000/score
+curl -H "Content-Type: application/json" --data @test.json -X POST http://127.0.0.1:5000/score
 ```
