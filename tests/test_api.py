@@ -27,6 +27,11 @@ class TestScore(TestCase):
 
 	def test_complete_json(self):
 		response = self.client.post('/score', content_type='application/json', data=json.dumps(prescription))
+		str_response = response.data.decode('utf-8')
+		json_obj = json.loads(str_response)
+		assert json_obj['prescription'][0][3] != None
+		assert json_obj['prescription'][2][3] == ""
+		assert len(json_obj['prescription'][3]) == 3
 		assert response.status_code == 200
 
 	def test_wrong_json(self):
