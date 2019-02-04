@@ -26,7 +26,7 @@ jupyter notebok
 
 Calling curl with a dummy request
 ```
-python ./ddc-api.py
+python ./ddcapi.py
 ```
 
 ### 4. Test the API

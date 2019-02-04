@@ -1,11 +1,13 @@
+import os
 import pandas as pd
 from flask import request, url_for
 from flask_api import FlaskAPI, status, exceptions
 from flask import json
 
 app = FlaskAPI(__name__)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-models = pd.read_csv('data/models.csv.gz')
+models = pd.read_csv(os.path.join(BASE_DIR,'ddc-api/data/models.csv.gz'))
 medications = models['medication'].unique()
 
 def medication_score(med):
