@@ -36,7 +36,7 @@ def score():
     """
     if request.method == 'POST':
         data = request.get_json()
-        prescription = data[0]['prescription']
+        prescription = data['prescription']
         for i, m in enumerate(prescription):
             m.append(medication_score(m))
             #print(m)
