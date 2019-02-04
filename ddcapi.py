@@ -24,13 +24,6 @@ def medication_score(med):
     else:
         return 3
 
-#@app.route("/score", methods=['GET', 'POST'])
-#def score():
-
-    # request.method == 'GET'
-    #return [medication(idx) for idx in models.sample(10).index]
-
-
 @app.route("/score", methods=['POST'])
 def score():
 
@@ -45,10 +38,14 @@ def score():
 
             else:
                 prescription = data['prescription']
-                for i, m in enumerate(prescription):
-                    m.append(medication_score(m))
+                if prescription == None:
+                    return '', status.HTTP_406_NOT_ACCEPTABLE
 
-                return data, status.HTTP_200_OK
+                else:
+                    for i, m in enumerate(prescription):
+                        m.append(medication_score(m))
+
+                    return data, status.HTTP_200_OK
         except:
             return '', status.HTTP_406_NOT_ACCEPTABLE
 
