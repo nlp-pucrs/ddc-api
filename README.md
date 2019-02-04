@@ -1,5 +1,6 @@
 ddc-api
 ==========
+[![Build Status](https://travis-ci.org/nlp-pucrs/ddc-api.svg?branch=master)](https://travis-ci.org/nlp-pucrs/ddc-api)
 
 Flask API for DDC Prescription Score
 
