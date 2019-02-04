@@ -1,0 +1,7 @@
+numpy
+pandas
+networkx
+matplotlib
+scipy
+sklearn
+flask
