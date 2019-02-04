@@ -4,5 +4,5 @@ networkx
 matplotlib
 scipy
 sklearn
-flask
+flask-api
 jupyter
