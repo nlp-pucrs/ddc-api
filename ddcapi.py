@@ -12,6 +12,7 @@ medications = models['medication'].unique()
 
 def medication_score(med):
     if med[0] not in medications: return ''
+    if len(med) != 3: return ''
 
     result = models[
                     (models['medication']==med[0]) &
@@ -37,13 +38,19 @@ def score():
     Return the same prescription with scores
     """
     if request.method == 'POST':
-        data = request.get_json()
-        prescription = data['prescription']
-        for i, m in enumerate(prescription):
-            m.append(medication_score(m))
-            #print(m)
+        try:
+            data = request.get_json(force=True, silent=True)
+            if data == None: 
+                return '', status.HTTP_406_NOT_ACCEPTABLE
 
-        return data, status.HTTP_200_OK
+            else:
+                prescription = data['prescription']
+                for i, m in enumerate(prescription):
+                    m.append(medication_score(m))
+
+                return data, status.HTTP_200_OK
+        except:
+            return '', status.HTTP_406_NOT_ACCEPTABLE
 
 
 if __name__ == "__main__":
