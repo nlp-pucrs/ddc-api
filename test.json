@@ -1,6 +1,7 @@
 [{
 	"prescription": [
 		["PARACETAMOL", 4, 35],
-		["VARFARINA", 1, 20]
+		["VARFARINA", 1, 20],
+		["VANCOMICINA", 1, 15]
 	]
 }]

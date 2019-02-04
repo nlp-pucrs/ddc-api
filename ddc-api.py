@@ -6,8 +6,11 @@ from flask import json
 app = FlaskAPI(__name__)
 
 models = pd.read_csv('data/models.csv.gz')
+medications = models['medication'].unique()
 
 def medication_score(med):
+    if med[0] not in medications: return ''
+
     result = models[
                     (models['medication']==med[0]) &
                     (models['frequency']==med[1]) &
@@ -36,7 +39,7 @@ def score():
         prescription = data[0]['prescription']
         for i, m in enumerate(prescription):
             m.append(medication_score(m))
-            print(m)
+            #print(m)
 
         return data, status.HTTP_200_OK
 
