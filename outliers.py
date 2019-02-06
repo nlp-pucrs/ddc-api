@@ -9,10 +9,6 @@ import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 from sklearn.metrics.pairwise import pairwise_distances, cosine_similarity
 
-def getPrescriptions(prescription, med_name):
-    prescription = prescription[prescription['medication'] == med_name]
-    return prescription[['dose','frequency']].values.astype(float)
-
 class ddc_outlier():
     y_pred = []
     pr = {}
@@ -26,21 +22,8 @@ class ddc_outlier():
         self.metric = metric
     
     def fit(self, X):
-        medication = pd.DataFrame(X, columns=['dose', 'freq'])
-        medication['reg'] = 1
-        MostFreq = medication[['reg','dose', 'freq']].groupby(['dose','freq']).agg(['count'])
-        grouped = pd.DataFrame(MostFreq['reg']['count'])
-        self.frequency = pd.DataFrame(grouped['count'].values, columns=['count'])
-        dose_conv = []
-        freq_dia = []
-        for name in grouped.index:
-            dose, freq = name
-            dose_conv.append(dose)
-            freq_dia.append(freq)
-
-        self.frequency['dose'] = dose_conv
-        self.frequency['freq'] = freq_dia
-        X = self.frequency[['dose','freq']].values.astype(float)
+        self.frequency = X
+        X = self.frequency[['dose','frequency']].values.astype(float)
         try:
             if self.metric == 'similarity':
                 self.sim_matrix = cosine_similarity(X,X)
@@ -55,14 +38,14 @@ class ddc_outlier():
         return self.pr, self.sim_matrix
     
     def predict(self, X):
-        medication = pd.DataFrame(X, columns=['dose', 'freq'])
+        medication = X
         medication['pr'] = 0
 
         for idx_frequency in self.frequency.index:
             med_frequency = self.frequency.iloc[idx_frequency]
             medication_index = medication[
                                         (medication['dose'] == med_frequency['dose']) &
-                                        (medication['freq'] == med_frequency['freq'])
+                                        (medication['frequency'] == med_frequency['frequency'])
                                         ].index
             if len(medication_index) > 0:
                 medication.loc[medication_index,'pr'] = self.pr[idx_frequency]
@@ -107,7 +90,7 @@ def build_model(prescription, medication_name):
         print('No prescription for ', medication_name)
         return 0
 
-    X = getPrescriptions(prescription, medication_name)
+    X = results[['dose','frequency','count']].reset_index()
 
     # compute scores
     ddc_j = ddc_outlier(alpha=1, metric='jaccard') ## alpha não influencia no resultado
