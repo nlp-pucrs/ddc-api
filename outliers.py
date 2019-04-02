@@ -4,8 +4,6 @@ import time
 import numpy as np
 import pandas as pd
 import networkx as nx
-import matplotlib.mlab as mlab
-import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 from sklearn.metrics.pairwise import pairwise_distances, cosine_similarity
 

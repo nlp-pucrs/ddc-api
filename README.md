@@ -25,14 +25,14 @@ jupyter notebok
 
 ### 3. Run API
 
-Calling curl with a dummy request
+Start DDC API
 ```
 python ./ddcapi.py
 ```
 
 ### 4. Test the API
 
-Calling curl with a dummy request
+Calling curl with a test request
 ```
-curl -H "Content-Type: application/json" --data @test.json -X POST http://127.0.0.1:5000/score
+curl -i -X POST -H "Content-Type: multipart/form-data" -F "file=@test.csv.gz;userid=hospital" http://127.0.0.1:5000/score
 ```
