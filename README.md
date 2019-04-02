@@ -34,5 +34,5 @@ python ./ddcapi.py
 
 Calling curl with a test request
 ```
-curl -i -X POST -H "Content-Type: multipart/form-data" -F "file=@test.csv.gz;userid=hospital" http://127.0.0.1:5000/score
+curl -X POST -F "userid=hospital" -F 'file=@data/test.csv.gz' http://127.0.0.1:5000/score -o results.csv.gz
 ```
