@@ -36,3 +36,9 @@ Calling curl with a test request
 ```
 curl -X POST -F "userid=hospital" -F 'file=@data/test.csv.gz' http://127.0.0.1:5000/score -o results.csv.gz
 ```
+
+### 5. CSV Format Example
+
+The file must have the same header (columns names) and types:
+
+https://github.com/nlp-pucrs/ddc-api/blob/master/data/test.csv
