@@ -11,7 +11,7 @@ warnings.filterwarnings('ignore')
 app = FlaskAPI(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR,'ddc-api/upload/')
-tokenList = pd.read_csv('data/tokens.csv')
+tokenList = pd.read_csv(os.path.join(BASE_DIR,'ddc-api/data/tokens.csv'))
 
 @app.route("/score", methods=['POST'])
 def score():
