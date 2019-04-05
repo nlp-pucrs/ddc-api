@@ -22,11 +22,11 @@ def score():
     if request.method == 'POST':
         try:
             userid = request.form['userid']
-            if userid == None: return 'No User ID', status.HTTP_400_BAD_REQUEST
-            if userid not in tokenList['token'].values: return 'No User ID', status.HTTP_401_UNAUTHORIZED
-            if 'file' not in request.files: return 'No file part:', status.HTTP_400_BAD_REQUEST
+            if userid == None: return 'HTTP_400_BAD_REQUEST: no userid', status.HTTP_400_BAD_REQUEST
+            if userid not in tokenList['token'].values: return 'HTTP_401_UNAUTHORIZED: user not allowed', status.HTTP_401_UNAUTHORIZED
+            if 'file' not in request.files: return 'HTTP_400_BAD_REQUEST: no file part', status.HTTP_400_BAD_REQUEST
             file = request.files['file']
-            if file.filename == '': return 'No file part name:', status.HTTP_400_BAD_REQUEST
+            if file.filename == '': return 'HTTP_400_BAD_REQUEST: no file part name', status.HTTP_400_BAD_REQUEST
 
             now = datetime.datetime.now()
             now_string = now.isoformat().replace(':','-').replace('.','-')
@@ -37,7 +37,7 @@ def score():
             try:
                 prescriptions = pd.read_csv(file_path, compression='gzip')
             except ValueError:
-                return 'Unabled to read the received file:', status.HTTP_412_PRECONDITION_FAILED
+                return 'HTTP_412_PRECONDITION_FAILED: unabled to read the received file', status.HTTP_412_PRECONDITION_FAILED
             
             columns = ['medication', 'frequency', 'dose', 'count', 'score']
             models = pd.DataFrame(columns=columns)
@@ -55,9 +55,9 @@ def score():
                                        mimetype='application/x-gzip')
 
         except ValueError:
-            return 'ValueError:' + ValueError, status.HTTP_500_INTERNAL_SERVER_ERROR
+            return 'HTTP_500_INTERNAL_SERVER_ERROR:' + ValueError, status.HTTP_500_INTERNAL_SERVER_ERROR
     else:
-        return 'Only accept POST but request is: ' + request.method, status.HTTP_405_METHOD_NOT_ALLOWED
+        return 'HTTP_405_METHOD_NOT_ALLOWED: only accept POST but request is' + request.method, status.HTTP_405_METHOD_NOT_ALLOWED
 
 if __name__ == "__main__":
     app.run(debug=True)
