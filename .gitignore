@@ -106,3 +106,4 @@ data/prescriptions_sample.csv.gz
 apienv/
 upload/*
 examples/example.csv.gz
+examples/example.class
