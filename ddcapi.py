@@ -33,9 +33,12 @@ def score():
                 filename = now_string + '_' + userid + '_' + secure_filename(file.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
-
-                prescriptions = pd.read_csv(file_path, compression='gzip')
-
+                
+                try:
+                    prescriptions = pd.read_csv(file_path, compression='gzip')
+                except Exception, e:
+                    return 'Unabled to read the received file:', status.HTTP_406_NOT_ACCEPTABLE
+                
                 columns = ['medication', 'frequency', 'dose', 'count', 'score']
                 models = pd.DataFrame(columns=columns)
                 medications = prescriptions['medication'].unique()
