@@ -107,3 +107,4 @@ apienv/
 upload/*
 examples/example.csv.gz
 examples/example.class
+results.csv.gz
