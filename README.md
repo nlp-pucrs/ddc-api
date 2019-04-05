@@ -25,7 +25,27 @@ python3 ./ddcapi.py
 
 ### 3. Test the API
 
-Calling curl with a test request
+#### 3.1 Request details
+
+```
+POST /ddc-api/score
+Content-Type: multipart/form-data;boundary=----XXXX
+Host: 127.0.0.1
+
+----XXXX
+Content-Disposition: form-data; name="userid"
+
+hospital
+----XXXX
+Content-Disposition: form-data; name="file"; filename="test.csv.gz"
+Content-Type: application/x-gzip
+
+<multipart-file-content>
+----XXXX--
+```
+
+#### 3.2 Requesting with curl
+
 ```
 curl -X POST -F "userid=hospital" -F 'file=@data/test.csv.gz' http://127.0.0.1:5000/score -o results.csv.gz
 ```
