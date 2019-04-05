@@ -1,6 +1,5 @@
 import requests
 import pandas as pd
-from io import BytesIO
 
 url = 'http://127.0.0.1:5000/score'
 files = {'file': open('../data/test.csv.gz', 'rb')}
@@ -13,4 +12,5 @@ file.write(r.content)
 file.close()
 
 models = pd.read_csv("example.csv.gz")
-print(models.groupby('medication').count())
+count = models.groupby('medication').count()
+print(count)
