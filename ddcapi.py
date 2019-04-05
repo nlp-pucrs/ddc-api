@@ -36,7 +36,7 @@ def score():
                 
                 try:
                     prescriptions = pd.read_csv(file_path, compression='gzip')
-                except Exception, e:
+                except ValueError:
                     return 'Unabled to read the received file:', status.HTTP_406_NOT_ACCEPTABLE
                 
                 columns = ['medication', 'frequency', 'dose', 'count', 'score']
