@@ -3,6 +3,8 @@ ddc-api
 [![Build Status](https://travis-ci.org/nlp-pucrs/ddc-api.svg?branch=master)](https://travis-ci.org/nlp-pucrs/ddc-api)
 
 Flask API for DDC Prescription Score
+- Research Paper: [IEEE J-BHI - DDC-Outliers](https://ieeexplore.ieee.org/document/8340108)
+- Related to: [JCI - Improve Medication Management](https://www.jointcommissioninternational.org/improve/improve-medication-management/)
 
 Tutorial
 ------------
