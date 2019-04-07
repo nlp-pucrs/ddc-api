@@ -6,6 +6,8 @@ import pandas as pd
 import networkx as nx
 from scipy.stats import multivariate_normal
 from sklearn.metrics.pairwise import pairwise_distances, cosine_similarity
+import warnings
+warnings.filterwarnings('ignore')
 
 class ddc_outlier():
     y_pred = []

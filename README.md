@@ -15,7 +15,7 @@ How To use DDC-API
 
 First, install the dependencies packages.
 ```
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt --user --upgrade
 ```
 
 ### 2. Run API
@@ -55,7 +55,7 @@ curl -X POST -F "userid=hospital" -F 'file=@data/test.csv.gz' http://127.0.0.1:5
 ### 4. Run Unit Test
 
 ```
-python3 setup.py test
+python3 -m pytest
 ```
 
 ### 5. CSV Format Example

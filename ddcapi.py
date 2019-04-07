@@ -24,9 +24,9 @@ def score():
             userid = request.form['userid']
             if userid == None: return 'HTTP_400_BAD_REQUEST: no userid', status.HTTP_400_BAD_REQUEST
             if userid not in tokenList['token'].values: return 'HTTP_401_UNAUTHORIZED: user not allowed', status.HTTP_401_UNAUTHORIZED
-            if 'file' not in request.files: return 'HTTP_400_BAD_REQUEST: no file part', status.HTTP_400_BAD_REQUEST
+            if 'file' not in request.files: return 'HTTP_406_NOT_ACCEPTABLE: no file part', status.HTTP_406_NOT_ACCEPTABLE
             file = request.files['file']
-            if file.filename == '': return 'HTTP_400_BAD_REQUEST: no file part name', status.HTTP_400_BAD_REQUEST
+            if file.filename == '': return 'HTTP_412_PRECONDITION_FAILED: no file part name', status.HTTP_412_PRECONDITION_FAILED
 
             now = datetime.datetime.now()
             now_string = now.isoformat().replace(':','-').replace('.','-')
