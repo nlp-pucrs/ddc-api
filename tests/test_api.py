@@ -26,14 +26,21 @@ def test_empty_file(client):
 	response = client.post('/score', data={'userid':'hospital', 'file':''})
 	assert response.status_code == 406
 
-def test_wrong_file(client):
+def test_not_gziped_file(client):
 	file = {'file': open('./data/tokens.csv', 'rb')}
 	response = client.post('/score', data={'userid':'hospital', 'file': file})
-	assert response.status_code == 500
+	assert response.status_code == 412
+
+def test_wrong_header_file(client):
+	file = {'file': open('./data/medications.csv.gz', 'rb')}
+	response = client.post('/score', data={'userid':'hospital', 'file': file})
+	assert response.status_code == 417
 
 def test_correct_file(client):
 	file = {'file': open('./data/test.csv.gz', 'rb')}
 	response = client.post('/score', data={'userid':'hospital', 'file': file})
+
+	assert response.status_code == 200
 
 	file = open("examples/example.csv.gz", "wb")
 	file.write(response.data)
@@ -42,6 +49,5 @@ def test_correct_file(client):
 	models = pd.read_csv("examples/example.csv.gz")
 	count = models.groupby('medication').count()
 	count_len = len(count)
-
-	assert response.status_code == 200
+	
 	assert count_len == 3
