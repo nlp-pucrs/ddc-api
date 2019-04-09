@@ -15,6 +15,8 @@ How To use DDC-API
 
 First, install the dependencies packages.
 ```
+git clone https://github.com/nlp-pucrs/ddc-api.git
+cd ddc-api
 pip3 install -r requirements.txt --user --upgrade
 ```
 
