@@ -55,4 +55,4 @@ def test_correct_file(client):
 	count_no = models[models['score']==-1].groupby('medication').count()
 	count_no_len = len(count_no)
 
-	assert count_no_len == 1
+	assert count_no_len == 2

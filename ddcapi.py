@@ -25,6 +25,7 @@ def is_jaccard(selected, medication_name):
     tuples = selected[['frequency','dose']].values # sufix _1
     counts = selected[['count']].values
 
+    # Rebuild Original Distribution and Normalization
     hist_freq = []
     hist_dose = []
     pd_hist = pd.DataFrame(columns=['freq','dose'])
@@ -48,7 +49,6 @@ def is_jaccard(selected, medication_name):
     gmean1_2 = stats.gmean(hist)[0]
     dose2_2 = len(np.unique(hist[:,1]))
 
-
     ## Decision Trees based on 144 medication manually evaluated by two specialists
     if medication_name.find(' CP') > 0:
         ## CP Decision Tree
@@ -68,8 +68,6 @@ def is_jaccard(selected, medication_name):
         else: 
             if dose2_2 > 10 and mean1_2 > 2.85: return 0
             else: return 1
-
-
 
 def add_score(file_path):
     prescriptions = pd.read_csv(file_path, compression='gzip')
