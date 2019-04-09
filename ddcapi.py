@@ -3,6 +3,8 @@ import pandas as pd
 from flask import request, url_for, send_from_directory
 from flask_api import FlaskAPI, status, exceptions
 from werkzeug.utils import secure_filename
+from scipy import stats
+import numpy as np
 import outliers
 import warnings
 import datetime
@@ -18,6 +20,19 @@ def clean_filename(userid, file_filename):
     now_string = now.isoformat().replace(':','-').replace('.','-')
     return now_string + '_' + userid + '_' + secure_filename(file_filename)
 
+def is_jaccard(selected):
+    tuples = selected[['frequency','dose']].values
+    gmean1 = stats.gmean(tuples)[0]
+    gmean2 = stats.gmean(tuples)[1]
+    dose2 = len(np.unique(tuples[:,1]))
+
+    if gmean1 > 16.67: return 0
+    else: 
+        if gmean2 < 312.13: return 1
+        else: 
+            if dose2 > 8: return 0
+            else: return 1
+
 def add_score(file_path):
     prescriptions = pd.read_csv(file_path, compression='gzip')
     
@@ -25,16 +40,20 @@ def add_score(file_path):
     models = pd.DataFrame(columns=columns)
     medications = prescriptions['medication'].unique()
 
-    for m in medications:
-        result = outliers.build_model(prescriptions, m)
-        agg = result[columns].groupby(columns).count().reset_index()
-        models = models.append(agg)
+    for medication_name in medications:
+        selected = prescriptions[prescriptions['medication']==medication_name]
+        if (is_jaccard(selected)):
+            result = outliers.build_model(selected)
+            selected = result[columns].groupby(columns).count().reset_index()
+        else:
+            selected['score'] = -1
+
+        models = models.append(selected)
 
     models.to_csv(file_path, compression='gzip', index=None)
 
 @app.route("/score", methods=['POST'])
 def score():
-
     """
     Return the same prescription table with scores
     """

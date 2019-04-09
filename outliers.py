@@ -57,12 +57,12 @@ class ddc_outlier():
         y_pred[y_pred >= (pr_threshold*self.alpha)] = 1 # convert to false
         return y_pred
 
-def minMaxScaling(Y, media,mean=True):
+def minMaxScaling(Y,mean=True):
     
     if mean: pr_threshold = np.mean(Y)
     else: pr_threshold = np.median(Y)
     
-    print('Threshold ' + media + ' :', round(pr_threshold,3))
+    #print('Threshold :', round(pr_threshold,3))
     
     Y = Y / pr_threshold
   
@@ -84,23 +84,22 @@ def minMaxScaling(Y, media,mean=True):
     
     return np.round(Y_std)
     
-def build_model(prescription, medication_name):
-    results = prescription[prescription['medication']==medication_name]
-    if len(results) == 0: 
-        print('No prescription for ', medication_name)
+def build_model(selected):
+    if len(selected) == 0: 
+        print('No prescriptions')
         return 0
 
-    X = results[['dose','frequency','count']].reset_index()
+    X = selected[['dose','frequency','count']].reset_index()
 
     # compute scores
     ddc_j = ddc_outlier(alpha=1, metric='jaccard') ## alpha não influencia no resultado
     ddc_j.fit(X)
-    results['outlier_jaccard'] = ddc_j.predict(X)
-    scores_mean_j = minMaxScaling(list(ddc_j.pr.values()), medication_name)
+    selected['outlier_jaccard'] = ddc_j.predict(X)
+    scores_mean_j = minMaxScaling(list(ddc_j.pr.values()))
     
     # propagate scores
     for i, f in enumerate(ddc_j.frequency.values):
-        med_indexes = results[(results['dose']==f[1]) & (results['frequency']==f[2])].index
-        results.loc[med_indexes, 'score'] = scores_mean_j[i]
+        med_indexes = selected[(selected['dose']==f[1]) & (selected['frequency']==f[2])].index
+        selected.loc[med_indexes, 'score'] = scores_mean_j[i]
 
-    return results
+    return selected
