@@ -3,6 +3,7 @@ import pandas as pd
 from flask import request, url_for, send_from_directory
 from flask_api import FlaskAPI, status, exceptions
 from werkzeug.utils import secure_filename
+from sklearn.preprocessing import normalize
 from scipy import stats
 import numpy as np
 import outliers
@@ -20,18 +21,46 @@ def clean_filename(userid, file_filename):
     now_string = now.isoformat().replace(':','-').replace('.','-')
     return now_string + '_' + userid + '_' + secure_filename(file_filename)
 
-def is_jaccard(selected):
+def is_jaccard(selected, medication_name):
     tuples = selected[['frequency','dose']].values
+    counts = selected[['count']].values
+
+    hist_freq = []
+    hist_dose = []
+    pd_hist = pd.DataFrame(columns=['freq','dose'])
+    for i,c in enumerate(counts):
+        f = tuples[i,0]
+        d = tuples[i,1]
+        hist_freq.extend(np.repeat(f,c))
+        hist_dose.extend(np.repeat(d,c))
+    pd_hist['freq'] = hist_freq
+    pd_hist['dose'] = hist_dose
+    tuples_n = normalize(pd_hist.values)
+    hist = pd_hist.values
+
     gmean1 = stats.gmean(tuples)[0]
     gmean2 = stats.gmean(tuples)[1]
     dose2 = len(np.unique(tuples[:,1]))
+    sk2_1 = stats.skew(tuples[:,1])
+    sk2_2 = stats.skew(hist[:,1])
 
-    if gmean1 > 16.67: return 0
-    else: 
-        if gmean2 < 312.13: return 1
+    if medication_name.find(' CP') > 0:
+
+        ## CP Decision Tree
+        if sk2_1 <= 0.7153 and sk2_2 > 0.3276: return 0
+        else: return 1
+
+    else:
+
+        ## General Decision Tree
+        if gmean1 > 16.67: return 0
         else: 
-            if dose2 > 8: return 0
-            else: return 1
+            if gmean2 < 312.13: return 1
+            else: 
+                if dose2 > 8: return 0
+                else: return 1
+
+
 
 def add_score(file_path):
     prescriptions = pd.read_csv(file_path, compression='gzip')
@@ -42,7 +71,7 @@ def add_score(file_path):
 
     for medication_name in medications:
         selected = prescriptions[prescriptions['medication']==medication_name]
-        if (is_jaccard(selected)):
+        if (is_jaccard(selected, medication_name)):
             result = outliers.build_model(selected)
             selected = result[columns].groupby(columns).count().reset_index()
         else:
