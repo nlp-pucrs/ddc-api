@@ -22,7 +22,7 @@ def clean_filename(userid, file_filename):
     return now_string + '_' + userid + '_' + secure_filename(file_filename)
 
 def is_jaccard(selected, medication_name):
-    tuples = selected[['frequency','dose']].values
+    tuples = selected[['frequency','dose']].values # sufix _1
     counts = selected[['count']].values
 
     hist_freq = []
@@ -35,30 +35,39 @@ def is_jaccard(selected, medication_name):
         hist_dose.extend(np.repeat(d,c))
     pd_hist['freq'] = hist_freq
     pd_hist['dose'] = hist_dose
-    tuples_n = normalize(pd_hist.values)
-    hist = pd_hist.values
+    hist = pd_hist.values # sufix _2
+    tuples_n = normalize(pd_hist.values) # sufix _3
 
-    gmean1 = stats.gmean(tuples)[0]
-    gmean2 = stats.gmean(tuples)[1]
-    dose2 = len(np.unique(tuples[:,1]))
+    ## General Stats
+    mean1_2 = np.mean(hist[:,0])
+    kur2_2 = stats.kurtosis(hist[:,1])
+    ## CP Stats
     sk2_1 = stats.skew(tuples[:,1])
     sk2_2 = stats.skew(hist[:,1])
+    ## INJ Stats
+    gmean1_2 = stats.gmean(hist)[0]
+    dose2_2 = len(np.unique(hist[:,1]))
 
+
+    ## Decision Trees based on 144 medication manually evaluated by two specialists
     if medication_name.find(' CP') > 0:
-
         ## CP Decision Tree
         if sk2_1 <= 0.7153 and sk2_2 > 0.3276: return 0
         else: return 1
 
-    else:
+    elif medication_name.find(' INJ') > 0:
+        ## INJ Decision Tree
+        if dose2_2 <= 0.17 and gmean1_2 > 8.8478: return 1
+        else: return 0
 
+    else:
         ## General Decision Tree
-        if gmean1 > 16.67: return 0
+        if mean1_2 > 26.92:
+            if gmean1_2 <= 14.23 and kur2_2 <= 1.477: return 1
+            else: return 0
         else: 
-            if gmean2 < 312.13: return 1
-            else: 
-                if dose2 > 8: return 0
-                else: return 1
+            if dose2_2 > 10 and mean1_2 > 2.85: return 0
+            else: return 1
 
 
 
