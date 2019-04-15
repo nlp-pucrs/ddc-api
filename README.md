@@ -65,3 +65,6 @@ python3 -m pytest
 The file must have the same header (columns names) and types:
 
 https://github.com/nlp-pucrs/ddc-api/blob/master/data/test.csv
+
+### PUCRS A.I. in HealthCare
+This project belongs to [GIAS at PUCRS, Brazil](http://www.inf.pucrs.br/ia-saude/)
