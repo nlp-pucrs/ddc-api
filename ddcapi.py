@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from flask import request, url_for, send_from_directory
+from flask import request, url_for, send_from_directory, redirect
 from flask_api import FlaskAPI, status, exceptions
 from werkzeug.utils import secure_filename
 from sklearn.preprocessing import normalize
@@ -50,12 +50,12 @@ def is_jaccard(selected, medication_name):
     dose2_2 = len(np.unique(hist[:,1]))
 
     ## Decision Trees based on 144 medication manually evaluated by two specialists
-    if medication_name.find(' CP') > 0:
+    if medication_name.lower().find(' cp') > 0:
         ## CP Decision Tree
         if sk2_1 <= 0.7153 and sk2_2 > 0.3276: return 0
         else: return 1
 
-    elif medication_name.find(' INJ') > 0:
+    elif medication_name.lower().find(' inj') > 0:
         ## INJ Decision Tree
         if dose2_2 <= 0.17 and gmean1_2 > 8.8478: return 1
         else: return 0
@@ -118,6 +118,13 @@ def score():
 
     else:
         return 'HTTP_405_METHOD_NOT_ALLOWED: only accept POST but request is' + request.method, status.HTTP_405_METHOD_NOT_ALLOWED
+
+@app.route("/score", methods=['GET'])
+def score_get():
+    """
+    Redirect to github page
+    """
+    return redirect('https://github.com/nlp-pucrs/ddc-api/wiki/Method-Not-Allowed')
 
 if __name__ == "__main__":
     app.run(debug=True)
