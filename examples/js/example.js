@@ -1,5 +1,5 @@
-let request = require('request');
-let fs = require('fs');
+const request = require('request');
+const fs = require('fs');
 
 const options = {
   url: 'http://127.0.0.1:5000/score',
