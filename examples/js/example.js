@@ -19,7 +19,7 @@ request.post(options, function (err, res, body) {
   console.log('Response status: ', res.statusCode);
 
   if (res.statusCode === 200) {
-    let fileName = 'output.csv.gz';
+    const fileName = 'output.csv.gz';
     fs.writeFileSync(fileName, body);
     console.log('File created: ', fileName);
   } 
