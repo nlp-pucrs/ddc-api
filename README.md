@@ -54,6 +54,14 @@ Content-Type: application/x-gzip
 curl -X POST -F "userid=hospital" -F 'file=@data/test.csv.gz' http://127.0.0.1:5000/score -o results.csv.gz
 ```
 
+#### 3.3 Examples
+
+- [Python](https://github.com/nlp-pucrs/ddc-api/blob/master/examples/example.py)
+- [PHP](https://github.com/nlp-pucrs/ddc-api/blob/master/examples/example.php)
+- [Java](https://github.com/nlp-pucrs/ddc-api/blob/master/examples/example.java)
+- [JavaScript](https://github.com/nlp-pucrs/ddc-api/tree/master/examples/js)
+- [C#](https://github.com/nlp-pucrs/ddc-api/blob/master/examples/example.cs)
+
 ### 4. Run Unit Test
 
 ```
