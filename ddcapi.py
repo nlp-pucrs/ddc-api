@@ -50,12 +50,12 @@ def is_jaccard(selected, medication_name):
     dose2_2 = len(np.unique(hist[:,1]))
 
     ## Decision Trees based on 144 medication manually evaluated by two specialists
-    if medication_name.lower().find(' cp') > 0:
+    if str(medication_name).lower().find(' cp') > 0:
         ## CP Decision Tree
         if sk2_1 <= 0.7153 and sk2_2 > 0.3276: return 0
         else: return 1
 
-    elif medication_name.lower().find(' inj') > 0:
+    elif str(medication_name).lower().find(' inj') > 0:
         ## INJ Decision Tree
         if dose2_2 <= 0.17 and gmean1_2 > 8.8478: return 1
         else: return 0
