@@ -70,7 +70,8 @@ def is_jaccard(selected, medication_name):
             else: return 1
 
 def add_score(file_path):
-    prescriptions = pd.read_csv(file_path, compression='gzip')
+    dtype_columns = {'medication':'str', 'frequency':'float', 'dose':'float', 'count':'int'}
+    prescriptions = pd.read_csv(file_path, compression='gzip', dtype=dtype_columns)
     
     columns = ['medication', 'frequency', 'dose', 'count', 'score']
     models = pd.DataFrame(columns=columns)
