@@ -6,6 +6,7 @@ import pandas as pd
 import networkx as nx
 from scipy.stats import multivariate_normal
 from sklearn.metrics.pairwise import pairwise_distances, cosine_similarity
+from sklearn.preprocessing import minmax_scale
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -95,7 +96,8 @@ def build_model(selected):
     ddc_j = ddc_outlier(alpha=1, metric='jaccard') ## alpha não influencia no resultado
     ddc_j.fit(X)
     selected['outlier_jaccard'] = ddc_j.predict(X)
-    scores_mean_j = minMaxScaling(list(ddc_j.pr.values()))
+    #scores_mean_j = minMaxScaling(list(ddc_j.pr.values()))
+    scores_mean_j = np.abs(np.round(minmax_scale(list(ddc_j.pr.values()), feature_range=(0,3)) - 2.8))
     
     # propagate scores
     for i, f in enumerate(ddc_j.frequency.values):
