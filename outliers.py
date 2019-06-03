@@ -85,6 +85,13 @@ def minMaxScaling(Y,mean=True):
     
     return np.round(Y_std)
     
+def minMaxScale(scores):
+    pr_threshold = np.mean(scores)
+    a = (scores / pr_threshold)
+    b = np.where(a < 1, a, 1)
+    return np.abs(np.round(minmax_scale(b, feature_range=(0,3)) - 3))
+
+
 def build_model(selected):
     if len(selected) == 0: 
         print('No prescriptions')
@@ -97,8 +104,8 @@ def build_model(selected):
     ddc_j.fit(X)
     selected['outlier_jaccard'] = ddc_j.predict(X)
     #scores_mean_j = minMaxScaling(list(ddc_j.pr.values()))
-    scores_mean_j = np.abs(np.round(minmax_scale(list(ddc_j.pr.values()), feature_range=(0,3)) - 2.8))
-    
+    scores_mean_j = minMaxScale(list(ddc_j.pr.values()))
+
     # propagate scores
     for i, f in enumerate(ddc_j.frequency.values):
         med_indexes = selected[(selected['dose']==f[1]) & (selected['frequency']==f[2])].index
