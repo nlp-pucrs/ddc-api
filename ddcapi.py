@@ -37,7 +37,6 @@ def is_jaccard(selected, medication_name):
     pd_hist['freq'] = hist_freq
     pd_hist['dose'] = hist_dose
     hist = pd_hist.values # sufix _2
-    tuples_n = normalize(pd_hist.values) # sufix _3
 
     ## General Stats
     mean1_2 = np.mean(hist[:,0])
@@ -46,6 +45,7 @@ def is_jaccard(selected, medication_name):
     sk2_1 = stats.skew(tuples[:,1])
     sk2_2 = stats.skew(hist[:,1])
     ## INJ Stats
+    if mean1_2 > 1000: return 0 ## prevent gmean overflow
     gmean1_2 = stats.gmean(hist)[0]
     dose2_2 = len(np.unique(hist[:,1]))
 
