@@ -51,7 +51,7 @@ def is_jaccard(selected, medication_name):
 
     medication_lower = str(medication_name).lower()
     is_pill = medication_lower.find(' cp') > 0 or medication_lower.find(' comprimido') > 0 or medication_lower.find(' capsula') > 0
-    is_inject = str(medication_name).lower().find(' inj') > 0
+    is_inject = medication_lower.find(' inj') > 0
 
     ## Decision Trees based on 144 medication manually evaluated by two specialists
     if is_pill:
