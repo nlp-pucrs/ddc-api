@@ -10,3 +10,4 @@ jupyter
 pytest
 pytest-flask
 flexmock
+zappa

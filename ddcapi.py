@@ -127,5 +127,9 @@ def score_get():
     """
     return redirect('https://github.com/nlp-pucrs/ddc-api/wiki/Method-Not-Allowed')
 
+@app.route('/')
+def index():
+    return "Hello, world!", 200
+
 if __name__ == "__main__":
     app.run(debug=True)

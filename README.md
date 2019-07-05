@@ -74,5 +74,15 @@ The file must have the same header (columns names) and types:
 
 https://github.com/nlp-pucrs/ddc-api/blob/master/data/test.csv
 
+### 6. Zappa Deploy
+
+- Install [Zappa](https://www.gun.io/blog/serverless-microservices-with-zappa-and-flask)
+- Configure zappa_settings.json and run the code below
+- Make sure you have a valid AWS account, your AWS credentials file is properly installed.
+
+```
+zappa deploy dev
+```
+
 ### PUCRS A.I. in HealthCare
 This project belongs to [GIAS at PUCRS, Brazil](http://www.inf.pucrs.br/ia-saude/)

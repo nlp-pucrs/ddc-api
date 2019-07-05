@@ -1,0 +1,12 @@
+{
+    "dev": {
+        "s3_bucket": "lambda",
+        "app_function": "ddcapi.app",
+        "certificate_arn": "arn:aws:acm:us-east-1",
+        "domain": "api.example.ai",
+        "route53_enabled": true,
+        "runtime": "python3.7",
+        "memory_size": 128,
+        "slim_handler": true
+    }
+}
