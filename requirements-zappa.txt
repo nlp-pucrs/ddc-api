@@ -1,0 +1,7 @@
+numpy
+pandas
+networkx
+scipy
+sklearn
+flask-api
+zappa

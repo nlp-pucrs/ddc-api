@@ -81,6 +81,9 @@ https://github.com/nlp-pucrs/ddc-api/blob/master/data/test.csv
 - Make sure you have a valid AWS account, your AWS credentials file is properly installed.
 
 ```
+virtualenv env
+source env/bin/activate
+pip install -r requirements-zappa.txt
 zappa deploy dev
 ```
 

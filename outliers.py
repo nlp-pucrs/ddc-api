@@ -100,7 +100,7 @@ def build_model(selected):
     X = selected[['dose','frequency','count']].reset_index()
 
     # compute scores
-    ddc_j = ddc_outlier(alpha=1, metric='jaccard') ## alpha não influencia no resultado
+    ddc_j = ddc_outlier(alpha=1, metric='jaccard') ## alpha nao influencia no resultado
     ddc_j.fit(X)
     selected['outlier_jaccard'] = ddc_j.predict(X)
     #scores_mean_j = minMaxScaling(list(ddc_j.pr.values()))
