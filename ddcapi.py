@@ -83,7 +83,7 @@ def add_score(file_path):
 
     for medication_name in medications:
         selected = prescriptions[prescriptions['medication']==medication_name]
-        if (is_jaccard(selected, medication_name)):
+        if True: #(is_jaccard(selected, medication_name)):
             result = outliers.build_model(selected)
             selected = result[columns].groupby(columns).count().reset_index()
         else:

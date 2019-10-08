@@ -92,7 +92,7 @@ def minMaxScale(scores):
     return np.abs(np.round(minmax_scale(b, feature_range=(0,3)) - 3))
 
 
-def build_model(selected):
+def build_model(selected, dummy=None):
     if len(selected) == 0: 
         print('No prescriptions')
         return 0
