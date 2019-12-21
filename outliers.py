@@ -1,10 +1,8 @@
 import sys
 import time
-
 import numpy as np
 import pandas as pd
 import networkx as nx
-from scipy.stats import multivariate_normal
 from sklearn.metrics.pairwise import pairwise_distances, cosine_similarity
 from sklearn.preprocessing import minmax_scale
 import warnings

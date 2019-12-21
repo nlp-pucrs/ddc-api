@@ -1,0 +1,13 @@
+numpy
+pandas
+networkx
+matplotlib
+scipy
+sklearn
+flask
+flask-api
+jupyter
+pytest
+pytest-flask
+flexmock
+zappa

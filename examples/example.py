@@ -3,7 +3,7 @@ import pandas as pd
 
 url = 'http://127.0.0.1:5000/score'
 files = {'file': open('../data/test.csv.gz', 'rb')}
-data = {'userid':'hospital'}
+data = {'userid':'1'}
 
 r = requests.post(url, files=files, data=data)
 

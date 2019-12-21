@@ -51,7 +51,7 @@ Content-Type: application/x-gzip
 #### 3.2 Requesting with curl
 
 ```
-curl -X POST -F "userid=hospital" -F 'file=@data/test.csv.gz' http://127.0.0.1:5000/score -o results.csv.gz
+curl -X POST -F "userid=1" -F 'file=@data/test.csv.gz' http://localhost:5000/score -o results.csv.gz
 ```
 
 #### 3.3 Examples

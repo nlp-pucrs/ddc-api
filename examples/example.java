@@ -37,7 +37,7 @@ public class Example {
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, CHARSET), true);
 		) {
 			// add userid
-			addString(writer, boundary, "userid", "hospital");
+			addString(writer, boundary, "userid", "1");
 
 			// add file
 			addFile(writer, output, boundary, "file", binaryFile);

@@ -6,7 +6,7 @@
 
 $url = 'http://127.0.0.1:5000/score';
 $cFile = curl_file_create('../data/test.csv.gz');
-$post = array('userid' => 'hospital','file'=> $cFile);
+$post = array('userid' => '1','file'=> $cFile);
 
 $curl = curl_init();
 curl_setopt($curl, CURLOPT_POST, 1);

@@ -1,18 +1,13 @@
-import os
-import pandas as pd
 from flask import request, url_for, redirect
 from flask_api import FlaskAPI, status, exceptions
 from werkzeug.wrappers import Response
-from sklearn.preprocessing import normalize
+import pandas as pd
 import gzip, io
 import outliers
 import warnings
-import datetime
 warnings.filterwarnings('ignore')
 
 app = FlaskAPI(__name__)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-tokenList = pd.read_csv(os.path.join(BASE_DIR,'ddc-api/data/tokens.csv'))
 
 def add_score(gz_buffer):
     dtype_columns = {'medication':'str', 'frequency':'float', 'dose':'float', 'count':'int'}
@@ -43,7 +38,7 @@ def score():
     if request.method == 'POST':
         userid = request.form['userid']
         if userid == None: return 'HTTP_400_BAD_REQUEST: no userid', status.HTTP_400_BAD_REQUEST
-        if userid not in tokenList['token'].values: return 'HTTP_401_UNAUTHORIZED: user not allowed', status.HTTP_401_UNAUTHORIZED
+        if int(userid) not in [1,2,3]: return 'HTTP_401_UNAUTHORIZED: user not allowed', status.HTTP_401_UNAUTHORIZED
         if 'file' not in request.files: return 'HTTP_406_NOT_ACCEPTABLE: no file part', status.HTTP_406_NOT_ACCEPTABLE
         file = request.files['file']
         if file.filename == '': return 'HTTP_412_PRECONDITION_FAILED: no file part name', status.HTTP_412_PRECONDITION_FAILED
