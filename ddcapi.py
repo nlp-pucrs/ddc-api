@@ -1,11 +1,10 @@
 import os
 import pandas as pd
-from flask import request, url_for, send_from_directory, redirect
+from flask import request, url_for, redirect
 from flask_api import FlaskAPI, status, exceptions
-from werkzeug.utils import secure_filename
+from werkzeug.wrappers import Response
 from sklearn.preprocessing import normalize
-from scipy import stats
-import numpy as np
+import gzip, io
 import outliers
 import warnings
 import datetime
@@ -13,69 +12,11 @@ warnings.filterwarnings('ignore')
 
 app = FlaskAPI(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR,'ddc-api/upload/')
 tokenList = pd.read_csv(os.path.join(BASE_DIR,'ddc-api/data/tokens.csv'))
 
-def clean_filename(userid, file_filename):
-    now = datetime.datetime.now()
-    now_string = now.isoformat().replace(':','-').replace('.','-')
-    return now_string + '_' + userid + '_' + secure_filename(file_filename)
-
-def is_jaccard(selected, medication_name):
-    tuples = selected[['frequency','dose']].values # sufix _1
-    counts = selected[['count']].values
-
-    # Rebuild Original Distribution and Normalization
-    hist_freq = []
-    hist_dose = []
-    pd_hist = pd.DataFrame(columns=['freq','dose'])
-    for i,c in enumerate(counts):
-        f = tuples[i,0]
-        d = tuples[i,1]
-        hist_freq.extend(np.repeat(f,c))
-        hist_dose.extend(np.repeat(d,c))
-    pd_hist['freq'] = hist_freq
-    pd_hist['dose'] = hist_dose
-    hist = pd_hist.values # sufix _2
-
-    ## General Stats
-    mean1_2 = np.mean(hist[:,0])
-    kur2_2 = stats.kurtosis(hist[:,1])
-    ## CP Stats
-    sk2_1 = stats.skew(tuples[:,1])
-    sk2_2 = stats.skew(hist[:,1])
-    ## INJ Stats
-    if mean1_2 > 1000: return 0 ## prevent gmean overflow
-    gmean1_2 = stats.gmean(hist)[0]
-    dose2_2 = len(np.unique(hist[:,1]))
-
-    medication_lower = str(medication_name).lower()
-    is_pill = medication_lower.find(' cp') > 0 or medication_lower.find(' comprimido') > 0 or medication_lower.find(' capsula') > 0
-    is_inject = medication_lower.find(' inj') > 0
-
-    ## Decision Trees based on 144 medication manually evaluated by two specialists
-    if is_pill:
-        ## CP Decision Tree
-        if sk2_1 <= 0.7153 and sk2_2 > 0.3276: return 0
-        else: return 1
-
-    elif is_inject:
-        ## INJ Decision Tree
-        if dose2_2 <= 0.17 and gmean1_2 > 8.8478: return 1
-        else: return 0
-
-    else:
-        ## General Decision Tree
-        if mean1_2 > 26.92:
-            if gmean1_2 <= 14.23 and kur2_2 <= 1.477: return 1
-            else: return 0
-        else: 
-            if dose2_2 > 10 and mean1_2 > 2.85: return 0
-            else: return 1
-
-def add_score(file_path):
+def add_score(gz_buffer):
     dtype_columns = {'medication':'str', 'frequency':'float', 'dose':'float', 'count':'int'}
-    prescriptions = pd.read_csv(file_path, compression='gzip', dtype=dtype_columns)
+    prescriptions = pd.read_csv(gz_buffer, compression='gzip', dtype=dtype_columns)
     
     columns = ['medication', 'frequency', 'dose', 'count', 'score']
     models = pd.DataFrame(columns=columns)
@@ -83,15 +24,16 @@ def add_score(file_path):
 
     for medication_name in medications:
         selected = prescriptions[prescriptions['medication']==medication_name]
-        if True: #(is_jaccard(selected, medication_name)):
-            result = outliers.build_model(selected)
-            selected = result[columns].groupby(columns).count().reset_index()
-        else:
-            selected['score'] = -1
+        result = outliers.build_model(selected)
+        selected = result[columns].groupby(columns).count().reset_index()
 
         models = models.append(selected)
 
-    models.to_csv(file_path, compression='gzip', index=None)
+    csv_buffer = io.StringIO()
+    models.to_csv(csv_buffer, index=None)
+    csv_buffer.seek(0)
+
+    return csv_buffer
 
 @app.route("/score", methods=['POST'])
 def score():
@@ -106,20 +48,22 @@ def score():
         file = request.files['file']
         if file.filename == '': return 'HTTP_412_PRECONDITION_FAILED: no file part name', status.HTTP_412_PRECONDITION_FAILED
 
-        filename = clean_filename(userid, file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
+        gz_buffer = io.BytesIO()
+        gz_buffer.write(file.read())
+        gz_buffer.seek(0)
         
         try:
-            add_score(file_path)
+            new_buffer = add_score(gz_buffer)
         except KeyError:
             return 'HTTP_417_EXPECTATION_FAILED: wrong csv header', status.HTTP_417_EXPECTATION_FAILED
         except OSError:
             return 'HTTP_412_PRECONDITION_FAILED: file not gziped', status.HTTP_412_PRECONDITION_FAILED
 
-        return send_from_directory(directory=app.config['UPLOAD_FOLDER'],
-                                   filename=filename,
-                                   mimetype='application/x-gzip')
+        new_gz_buffer = io.BytesIO()
+        with gzip.GzipFile(fileobj=new_gz_buffer, mode='wb') as zipped:
+            zipped.write(bytes(new_buffer.getvalue(), 'utf-8'))
+
+        return Response(response=new_gz_buffer.getvalue(), status=200, content_type='application/x-gzip')
 
     else:
         return 'HTTP_405_METHOD_NOT_ALLOWED: only accept POST but request is' + request.method, status.HTTP_405_METHOD_NOT_ALLOWED
