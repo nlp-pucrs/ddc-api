@@ -3,6 +3,7 @@ from io import BytesIO
 from ddcapi import app
 import pandas as pd
 import warnings
+from werkzeug.datastructures import FileStorage
 warnings.filterwarnings('ignore')
 
 @pytest.fixture
@@ -27,19 +28,18 @@ def test_empty_file(client):
 	assert response.status_code == 406
 
 def test_not_gziped_file(client):
-	file = {'file': open('./data/test.csv', 'rb')}
+	file = FileStorage(stream=open('./data/test.csv', 'rb'))
 	response = client.post('/score', data={'userid':'1', 'file': file})
 	assert response.status_code == 412
 
 def test_wrong_header_file(client):
-	file = {'file': open('./data/medications.csv.gz', 'rb')}
+	file = FileStorage(stream=open('./data/medications.csv.gz', 'rb'))
 	response = client.post('/score', data={'userid':'1', 'file': file})
 	assert response.status_code == 417
 
 def test_correct_file(client):
-	file = {'file': open('./data/test.csv.gz', 'rb')}
+	file = FileStorage(stream=open('./data/test.csv.gz', 'rb'))
 	response = client.post('/score', data={'userid':'1', 'file': file})
-
 	assert response.status_code == 200
 
 	file = open("examples/example.csv.gz", "wb")
