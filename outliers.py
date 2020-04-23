@@ -90,7 +90,7 @@ def minMaxScale(scores):
     return np.abs(np.round(minmax_scale(b, feature_range=(0,3)) - 3))
 
 
-def build_model(selected, dummy=None):
+def build_model(selected, metric='jaccard'):
     if len(selected) == 0: 
         print('No prescriptions')
         return 0
@@ -98,7 +98,7 @@ def build_model(selected, dummy=None):
     X = selected[['dose','frequency','count']].reset_index()
 
     # compute scores
-    ddc_j = ddc_outlier(alpha=1, metric='jaccard') ## alpha nao influencia no resultado
+    ddc_j = ddc_outlier(alpha=1, metric=metric) ## alpha nao influencia no resultado
     ddc_j.fit(X)
     selected['outlier_jaccard'] = ddc_j.predict(X)
     #scores_mean_j = minMaxScaling(list(ddc_j.pr.values()))
